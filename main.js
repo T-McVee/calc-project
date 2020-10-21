@@ -3,32 +3,43 @@ const operators = document.querySelectorAll('.operator');
 const equals = document.querySelector('#equals');
 const clear = document.querySelector('#clear');
 const screen = document.querySelector('#screen');
-const decimal = document.querySelector('.decimal');
+const special = document.querySelectorAll('.special');
+const decimal = document.querySelector('#decimal');
+/* const percent = document.querySelector('.percent');
+const invert = document.querySelector('.invert'); */
+
+
 
 numbers.forEach(btn => btn.addEventListener('click', getInput));
 operators.forEach(btn => btn.addEventListener('click', getArg));
+special.forEach(btn => btn.addEventListener('click', getInput))
 decimal.addEventListener('click', checkFloat);
+/* percent.addEventListener('click', makePercent);
+invert.addEventListener('click', makeInvert); */
 equals.addEventListener('click', solve);
 clear.addEventListener('click', reset);
 
 const equation = {
   a: 0,
   b: 0,
-  result: 0,
+  result: null,
   operator: ''
 }
 
 
 function getInput(e) {
   let input = String(e.target.id);
-  updateScreen(input);
+
+  e.target.classList.contains('special') ? updateScreen(make(e))
+    : updateScreen(input);
 }
 
 function updateScreen(input) {
-  let val = parseFloat(screen.textContent);
-  val == equation.a || val == equation.result ? screen.textContent = input
-    : val.length > 5 ? null
-      : screen.textContent = `${val}${input}`;
+  let val = screen.textContent;
+  screen.textContent.length > 6 ? null
+    : val === equation.result ? screen.textContent = `${val}${input}`
+      : val == equation.a || val == equation.result ? screen.textContent = input
+        : screen.textContent = `${val}${input}`;
 }
 
 function getArg(e) {
@@ -37,20 +48,23 @@ function getArg(e) {
     solve();
   }
 
-  equation.a = parseInt(screen.textContent);
+  equation.a = parseFloat(screen.textContent);
   equation.operator = e.target.id;
+  console.log(equation);
 
 }
 
 function solve() {
 
-  equation.b == 0 ? equation.b = parseInt(screen.textContent)
-    : equation.a = parseInt(screen.textContent);
+  equation.b == 0 ? equation.b = parseFloat(screen.textContent)
+    : equation.a = parseFloat(screen.textContent);
 
   equation.result = operate(equation.operator, equation.a, equation.b);
   screen.textContent = equation.result;
 
   clearMem();
+  console.log(equation);
+
 }
 
 function reset() {
@@ -65,14 +79,31 @@ function clearScreen() {
 function clearMem() {
   equation.a = 0;
   equation.b = 0;
-  equation.result = 0;
+  //equation.result = 0;
   equation.operator = '';
+}
+
+function make(e) {
+  /* return e.target.id === 'decimal' ? checkFloat()
+    : null; */
 }
 
 function checkFloat() {
   // If '.' is present in screen text content disable '.'
+  let val = screen.textContent;
+  val.includes('.') ? null
+    : updateScreen('.');
 }
 
+function makePercent() {
+  let val = parseFloat(screen.textContent);
+  screen.textContent = val / 100;
+}
+
+function makeInvert() {
+  let val = parseFloat(screen.textContent);
+  screen.textContent = val - (val * 2);
+}
 
 // Operations
 function add(a, b) {
