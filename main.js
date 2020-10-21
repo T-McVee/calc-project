@@ -30,7 +30,7 @@ const equation = {
 function getInput(e) {
   let input = String(e.target.id);
 
-  e.target.classList.contains('special') ? updateScreen(make(e))
+  e.target.classList.contains('special') ? updateScreen2(make(e))
     : updateScreen(input);
 }
 
@@ -40,6 +40,10 @@ function updateScreen(input) {
     : val === equation.result ? screen.textContent = `${val}${input}`
       : val == equation.a || val == equation.result ? screen.textContent = input
         : screen.textContent = `${val}${input}`;
+}
+
+function updateScreen2(input) {
+  screen.textContent = input
 }
 
 function getArg(e) {
@@ -84,8 +88,9 @@ function clearMem() {
 }
 
 function make(e) {
-  /* return e.target.id === 'decimal' ? checkFloat()
-    : null; */
+  return e.target.id === 'invert' ? makeInvert()
+    : e.target.id === 'percent' ? makePercent()
+      : null;
 }
 
 function checkFloat() {
@@ -97,12 +102,12 @@ function checkFloat() {
 
 function makePercent() {
   let val = parseFloat(screen.textContent);
-  screen.textContent = val / 100;
+  return val / 100;
 }
 
 function makeInvert() {
   let val = parseFloat(screen.textContent);
-  screen.textContent = val - (val * 2);
+  return val - (val * 2);
 }
 
 // Operations
